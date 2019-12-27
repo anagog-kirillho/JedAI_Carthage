@@ -1,0 +1,7 @@
+github "duemunk/Async"
+github "ccgus/fmdb"
+github "bugsnag/bugsnag-cocoa"
+github "ZipArchive/ZipArchive"
+github "ashleymills/Reachability.swift"
+github "nicklockwood/GZIP"
+github "guykogus/CodableGeoJSON"

@@ -1,0 +1,11 @@
+framework module JedAI {
+  umbrella header "JedAI.h"
+
+  export *
+  module * { export * }
+}
+
+module JedAI.Swift {
+    header "JedAI-Swift.h"
+    requires objc
+}

@@ -1,0 +1,1288 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.1.3 (swiftlang-1100.0.282.1 clang-1100.0.33.15)
+// swift-module-flags: -target x86_64-apple-ios11.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name JedAI
+import AVFoundation
+import Async
+import BackgroundTasks
+import Bugsnag
+import SystemConfiguration.CaptiveNetwork
+import CommonCrypto
+import CoreLocation
+import CoreMotion
+import CoreTelephony
+import FMDB
+import Foundation
+import GZIP
+@_exported import JedAI
+import MapKit
+import Reachability
+import Swift
+import SystemConfiguration
+import UIKit
+import ZipArchive
+import os
+public struct Platform {
+  public static let isSimulator: Swift.Bool
+  public static let isNative: Swift.Bool
+  public static let isDebug: Swift.Bool
+  public static let isNotDebug: Swift.Bool
+  public static var deviceModelName: Swift.String {
+    get
+  }
+}
+extension Double {
+  public var millis: Swift.Int {
+    get
+  }
+  public var millisAsDouble: Swift.Double {
+    get
+  }
+  public var minutes: Swift.Int {
+    get
+  }
+  public var minutesAsDouble: Swift.Double {
+    get
+  }
+}
+extension Int {
+  public var seconds: Foundation.TimeInterval {
+    get
+  }
+  public var minToSeconds: Foundation.TimeInterval {
+    get
+  }
+}
+public class JedAI {
+  public func startup(apiKey: Swift.String, _ completion: (() -> Swift.Void)? = nil)
+  public func shutdown()
+  public func refresh()
+  public func ensureStarted()
+  public func enableDevelopmentMode(key: Swift.Int64 = 0)
+  public var integrationMessagesHandler: ((os.OSLogType, Swift.String) -> Swift.Void)?
+  public func excludeOperationalZones(_ zones: [[Swift.String]])
+  public func includeOperationalZones(_ zones: [[Swift.String]])
+  public func excludeOperationalCountries(_ countries: [Swift.String])
+  public func includeOperationalCountries(_ countries: [Swift.String])
+  public func register(contextProvider: JedAI.ContextProvider)
+  public var applicationActive: Swift.Bool {
+    get
+  }
+  public var api: JedAI.PublicApi
+  public var configuration: JedAI.ConfigurationApi
+  public var user: JedAI.UserApi
+  public var share: JedAI.ShareApi
+  public var authorization: JedAI.AuthorizationApi
+  public var record: JedAI.RecordApi
+  public var playback: JedAI.PlaybackApi
+  public var `internal`: JedAI.InternalApi
+  public var state: JedAI.JedAIState {
+    get
+    set
+  }
+  public static let RefreshTaskIdentifier: Swift.String
+  public static let shared: JedAI.JedAI
+  @objc deinit
+}
+public func runSafeAsync(name: Swift.String? = nil, queue: Dispatch.DispatchQueue? = nil, _ block: @escaping () -> Swift.Void)
+public func runSafeT<T>(name: Swift.String? = nil, queue: Dispatch.DispatchQueue? = nil, _ block: @escaping () throws -> T?) throws -> T
+public func runSafe<T>(name: Swift.String? = nil, queue: Dispatch.DispatchQueue? = nil, _ block: @escaping () -> T) -> T
+public enum JedAIState {
+  case passive
+  case activating
+  case active
+  case passivating
+  public static func == (a: JedAI.JedAIState, b: JedAI.JedAIState) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+  public func hash(into hasher: inout Swift.Hasher)
+}
+extension Task {
+  @discardableResult
+  final public func continueWith<S>(_ executor: JedAI.Executor = .default, continuation: @escaping ((JedAI.Task<TResult>) throws -> S)) -> JedAI.Task<S>
+  @discardableResult
+  final public func continueWithTask<S>(_ executor: JedAI.Executor = .default, continuation: @escaping ((JedAI.Task<TResult>) throws -> JedAI.Task<S>)) -> JedAI.Task<S>
+}
+extension Task {
+  @discardableResult
+  final public func continueOnSuccessWith<S>(_ executor: JedAI.Executor = .default, continuation: @escaping ((TResult) throws -> S)) -> JedAI.Task<S>
+  @discardableResult
+  final public func continueOnSuccessWithTask<S>(_ executor: JedAI.Executor = .default, continuation: @escaping ((TResult) throws -> JedAI.Task<S>)) -> JedAI.Task<S>
+}
+extension Task {
+  @discardableResult
+  final public func continueOnErrorWith<E>(_ executor: JedAI.Executor = .default, continuation: @escaping ((E) throws -> TResult)) -> JedAI.Task<TResult> where E : Swift.Error
+  @discardableResult
+  final public func continueOnErrorWith(_ executor: JedAI.Executor = .default, continuation: @escaping ((Swift.Error) throws -> TResult)) -> JedAI.Task<TResult>
+  @discardableResult
+  final public func continueOnErrorWithTask<E>(_ executor: JedAI.Executor = .default, continuation: @escaping ((E) throws -> JedAI.Task<TResult>)) -> JedAI.Task<TResult> where E : Swift.Error
+  @discardableResult
+  final public func continueOnErrorWithTask(_ executor: JedAI.Executor = .default, continuation: @escaping ((Swift.Error) throws -> JedAI.Task<TResult>)) -> JedAI.Task<TResult>
+}
+public protocol ContextProvider {
+  func isNearToTrainStation(location: JedAI.JedAIModel.Location, distance: CoreLocation.CLLocationDistance) -> (near: Swift.Bool, distance: CoreLocation.CLLocationDistance)
+}
+extension Double {
+  public var kmh: CoreLocation.CLLocationSpeed {
+    get
+  }
+  public var ms: CoreLocation.CLLocationSpeed {
+    get
+  }
+}
+extension Double {
+  public var km: CoreLocation.CLLocationDistance {
+    get
+  }
+}
+public typealias JedAIMeanShiftModel = JedAI.Model.MeanShift
+extension Model {
+  public struct MeanShift {
+    public struct Cluster {
+      public var ids: [Swift.Int]
+      public var center: CoreLocation.CLLocationCoordinate2D
+      public init(ids: [Swift.Int], center: CoreLocation.CLLocationCoordinate2D)
+      public init(indexes: [Swift.Int], ids: [Swift.Int], center: CoreLocation.CLLocationCoordinate2D)
+      public func toPublic() -> JedAI.JedAIModel.Location
+    }
+    public struct Location {
+      public var id: Swift.Int
+      public var center: CoreLocation.CLLocationCoordinate2D
+      public init(id: Swift.Int, center: CoreLocation.CLLocationCoordinate2D)
+      public init(index: Swift.Int, id: Swift.Int, center: CoreLocation.CLLocationCoordinate2D)
+      public func toPublic() -> JedAI.JedAIModel.Location
+    }
+  }
+}
+public struct PlaybackOptions : Swift.OptionSet {
+  public var rawValue: Swift.Int
+  public init(rawValue: Swift.Int)
+  public static let batch: JedAI.PlaybackOptions
+  public static let synchronous: JedAI.PlaybackOptions
+  public typealias Element = JedAI.PlaybackOptions
+  public typealias ArrayLiteralElement = JedAI.PlaybackOptions
+  public typealias RawValue = Swift.Int
+}
+public struct PlaybackApi {
+  public var playing: Swift.Bool {
+    get
+  }
+  public var paused: Swift.Bool {
+    get
+  }
+  public func start(recordInfo: JedAI.Model.Record.Info, options: JedAI.PlaybackOptions = [], beforePlay: @escaping () -> Swift.Void = {})
+  public func stop(restorePrePlaybackEnvironment: Swift.Bool = true)
+  public func pause()
+  public func resume()
+}
+public struct MeanShift {
+  public func buildClusters(locations: [(id: Swift.Int, coordinate2D: CoreLocation.CLLocationCoordinate2D)], withKernel kernel: Swift.Double) -> [JedAI.Model.MeanShift.Cluster]
+  @available(*, deprecated, message: "use buildClusters(locations:[(id:Int, coordinate2D:CLLocationCoordinate2D)]")
+  public func buildClusters(locations: [JedAI.Model.MeanShift.Location], withKernel kernel: Swift.Double) -> [JedAI.Model.MeanShift.Cluster]
+  public init()
+}
+extension Task {
+  final public class func whenAny(_ tasks: [JedAI.Task<TResult>]) -> JedAI.Task<Swift.Void>
+  final public class func whenAny(_ tasks: JedAI.Task<TResult>...) -> JedAI.Task<Swift.Void>
+}
+extension Task {
+  final public class func whenAll(_ tasks: [JedAI.Task<TResult>]) -> JedAI.Task<Swift.Void>
+  final public class func whenAll(_ tasks: JedAI.Task<TResult>...) -> JedAI.Task<Swift.Void>
+  final public class func whenAllResult(_ tasks: [JedAI.Task<TResult>]) -> JedAI.Task<[TResult]>
+  final public class func whenAllResult(_ tasks: JedAI.Task<TResult>...) -> JedAI.Task<[TResult]>
+}
+extension URL {
+  public func md5(chunkSize: Swift.Int = 1024 * 1024) throws -> Foundation.Data
+}
+public struct InternalApi {
+  public var jedaiApplicationSupportDirectoryURL: Foundation.URL {
+    get
+  }
+  public var jedaiDBURL: Foundation.URL {
+    get
+  }
+  public var jedaiCacheDirectoryURL: Foundation.URL {
+    get
+  }
+  public var currentUserDefaults: Foundation.UserDefaults {
+    get
+  }
+  public func rebuildClusters()
+  public func createDatabase(url: Foundation.URL)
+  public func upgradeDatabase(url: Foundation.URL)
+  public func enableLog()
+  public func findVisits(byPoiId poiId: Swift.Int) -> [JedAI.JedAIModel.Visit]
+  public func findAllLocations() -> [JedAI.JedAIModel.Location]
+  public func findAllVisitClusters() -> [JedAI.JedAIModel.Location]
+  public func findAllClusteredVisits() -> [(id: Swift.Int, location: JedAI.JedAIModel.Location)]
+  public func findActivity(byId id: Swift.Int) -> JedAI.JedAIModel.Activity?
+  public func findVisit(byId id: Swift.Int) -> JedAI.JedAIModel.Visit?
+  public func startupDate() -> Foundation.Date?
+  public func latestDate() -> Foundation.Date?
+  public func copyCurrentToDefault() throws
+  public var homeUrl: Foundation.URL {
+    get
+    set
+  }
+  public var mainEventsQueue: Dispatch.DispatchQueue {
+    get
+  }
+  public func setSystemFakeTime(_ fakeTime: Foundation.Date)
+  public func resetSystemFakeTime()
+}
+extension String {
+  public func md5(using: Swift.String.Encoding = .utf8) -> Swift.String?
+}
+extension Data {
+  public func hexString() -> Swift.String
+  public func md5() -> Swift.String
+  public func gzipped() -> Foundation.Data?
+  public func gunzipped() -> Foundation.Data?
+  public var integer: Swift.Int {
+    get
+  }
+  public var int32: Swift.Int32 {
+    get
+  }
+  public var float: Swift.Float {
+    get
+  }
+  public var double: Swift.Double {
+    get
+  }
+  public var string: Swift.String? {
+    get
+  }
+}
+public struct AuthorizationApi {
+  public var wifiAvailable: Swift.Bool {
+    get
+  }
+  public var locationServicesAvailable: Swift.Bool {
+    get
+  }
+  public var motionServicesAvailable: Swift.Bool {
+    get
+  }
+  public var hasLocationServicePermissions: Swift.Bool {
+    get
+  }
+  public var locationServiceAuthorizationStatus: CoreLocation.CLAuthorizationStatus {
+    get
+  }
+  public var allowLocationServicesWhenAuthorizedAlwaysOnly: Swift.Bool {
+    get
+    set
+  }
+  public func requestForLocationServicePermissions(_ onAllowed: @escaping () -> (), onDenied: @escaping () -> ())
+  public var hasMotionServicePermissions: Swift.Bool {
+    get
+  }
+  @available(iOS 11.0, *)
+  public var motionServiceAuthorizationStatus: CoreMotion.CMAuthorizationStatus {
+    get
+  }
+  @available(iOS 11.0, *)
+  public func requestForMotionServicePermissions(_ onAllowed: @escaping () -> (), onDenied: @escaping () -> ())
+}
+public enum Executor {
+  case `default`
+  case immediate
+  case mainThread
+  case queue(Dispatch.DispatchQueue)
+  case operationQueue(Foundation.OperationQueue)
+  case closure((() -> Swift.Void) -> Swift.Void)
+  case escapingClosure((() -> Swift.Void) -> Swift.Void)
+  public func execute(_ closure: @escaping () -> Swift.Void)
+}
+extension Executor : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+extension TimeZone {
+  public static var now: Foundation.TimeZone {
+    get
+  }
+}
+final public class Task<TResult> {
+  public typealias Continuation = () -> Swift.Void
+  public init(_ result: TResult)
+  public init(error: Swift.Error)
+  final public class func cancelledTask() -> Self
+  convenience public init(_ executor: JedAI.Executor = .default, closure: @escaping (() throws -> TResult))
+  final public class func execute(_ executor: JedAI.Executor = .default, closure: @escaping (() throws -> TResult)) -> JedAI.Task<TResult>
+  final public class func executeWithTask(_ executor: JedAI.Executor = .default, closure: @escaping (() throws -> JedAI.Task<TResult>)) -> JedAI.Task<TResult>
+  final public var completed: Swift.Bool {
+    get
+  }
+  final public var faulted: Swift.Bool {
+    get
+  }
+  final public var cancelled: Swift.Bool {
+    get
+  }
+  final public var result: TResult? {
+    get
+  }
+  final public var error: Swift.Error? {
+    get
+  }
+  final public func waitUntilCompleted()
+  @objc deinit
+}
+extension Task : Swift.CustomStringConvertible, Swift.CustomDebugStringConvertible {
+  final public var description: Swift.String {
+    get
+  }
+  final public var debugDescription: Swift.String {
+    get
+  }
+}
+extension DatabaseConnection {
+  public func executeQuery(_ query: Swift.String, _ args: [Any]? = nil, verbose: Swift.Bool = true) throws -> FMDB.FMResultSet
+  public func executeQuery(_ query: Swift.String, _ args: [Swift.String : Any]) throws -> FMDB.FMResultSet
+  public func executeUpdate(_ query: Swift.String, _ args: [Any]? = nil, timeoutMillis: Swift.Int = 3000) throws
+  public func executeUpdate(_ query: Swift.String, _ args: [Swift.String : Any], timeoutMillis: Swift.Int = 3000) throws
+  public func executeStatements(_ sql: Swift.String) throws
+}
+extension Model {
+  public struct Sensors {
+    public typealias Confidence = Swift.Int
+    public enum Status : Swift.UInt8 {
+      case valid
+      case invalid
+      case notAvailable
+      public typealias RawValue = Swift.UInt8
+      public init?(rawValue: Swift.UInt8)
+      public var rawValue: Swift.UInt8 {
+        get
+      }
+    }
+    public struct Location : Swift.Codable {
+      public var timestamp: Foundation.Date
+      public var locationTimestamp: Foundation.Date
+      public var latitude: CoreLocation.CLLocationDegrees
+      public var longitude: CoreLocation.CLLocationDegrees
+      public var horizontalAccuracy: CoreLocation.CLLocationAccuracy
+      public var verticalAccuracy: CoreLocation.CLLocationAccuracy
+      public var speed: CoreLocation.CLLocationSpeed
+      public var bearing: CoreLocation.CLLocationDirection
+      public var altitude: CoreLocation.CLLocationDistance
+      public var floor: Swift.Int
+      public var confidence: JedAI.Model.Sensors.Confidence
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct Region : Swift.Codable {
+      public enum State : Swift.String, Swift.Codable {
+        case unknown
+        case start
+        case stop
+        case enter
+        case exit
+        case fail
+        public typealias RawValue = Swift.String
+        public init?(rawValue: Swift.String)
+        public var rawValue: Swift.String {
+          get
+        }
+      }
+      public var timestamp: Foundation.Date
+      public var state: JedAI.Model.Sensors.Region.State
+      public var identifier: Swift.String
+      public var radius: CoreLocation.CLLocationDistance
+      public var latitude: CoreLocation.CLLocationDegrees
+      public var longitude: CoreLocation.CLLocationDegrees
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct Visit : Swift.Codable, Swift.Equatable {
+      public var timestamp: Foundation.Date
+      public var arrivalDate: Foundation.Date
+      public var departureDate: Foundation.Date
+      public var latitude: CoreLocation.CLLocationDegrees
+      public var longitude: CoreLocation.CLLocationDegrees
+      public var horizontalAccuracy: CoreLocation.CLLocationAccuracy
+      public var confidence: JedAI.Model.Sensors.Confidence
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+      public static func == (a: JedAI.Model.Sensors.Visit, b: JedAI.Model.Sensors.Visit) -> Swift.Bool
+    }
+    public struct Activity : Swift.Codable {
+      public var timestamp: Foundation.Date
+      public var startDate: Foundation.Date
+      public var stationary: Swift.Bool
+      public var walking: Swift.Bool
+      public var running: Swift.Bool
+      public var automotive: Swift.Bool
+      public var cycling: Swift.Bool
+      public var unknown: Swift.Bool {
+        get
+      }
+      public var confidence: JedAI.Model.Sensors.Confidence
+      public var activities: [Swift.String] {
+        get
+      }
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct Pedometer : Swift.Codable {
+      public var timestamp: Foundation.Date
+      public var startDate: Foundation.Date
+      public var endDate: Foundation.Date
+      public var numberOfSteps: Swift.Int
+      public var distance: CoreLocation.CLLocationDistance
+      public var floorsAscended: Swift.Int
+      public var floorsDescended: Swift.Int
+      public var fineGrain: Swift.Bool
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct CarAudio : Swift.Codable {
+      public var timestamp: Foundation.Date
+      public var sessionUid: Swift.String
+      public var sessionType: Swift.String
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct Network : Swift.Codable {
+      public var timestamp: Foundation.Date
+      public var wifiSSID: Swift.String
+      public var wifiBSSID: Swift.String
+      public var wifiNetAddress: Swift.String
+      public var cellularNetAddress: Swift.String
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct AppState : Swift.Codable {
+      public var timestamp: Foundation.Date
+      public var active: Swift.Bool
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct Battery : Swift.Codable {
+      public var timestamp: Foundation.Date
+      public var level: Swift.Double
+      public var state: JedAI.Model.Sensors.Battery.State
+      public enum State : Swift.String, Swift.Codable {
+        case unknown
+        case unplugged
+        case charging
+        case full
+        public typealias RawValue = Swift.String
+        public init?(rawValue: Swift.String)
+        public var rawValue: Swift.String {
+          get
+        }
+      }
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+  }
+}
+public struct ActivityDataEvent {
+  public var startTimestamp: Swift.Int
+  public var startTimestampLocal: Swift.Int
+  public var startLatitude: CoreLocation.CLLocationDegrees
+  public var startLongitude: CoreLocation.CLLocationDegrees
+  public var startAccuracy: CoreLocation.CLLocationAccuracy
+  public var startAltitude: CoreLocation.CLLocationDistance
+  public var stopTimestamp: Swift.Int
+  public var stopTimestampLocal: Swift.Int
+  public var stopLatitude: CoreLocation.CLLocationDegrees
+  public var stopLongitude: CoreLocation.CLLocationDegrees
+  public var stopAccuracy: CoreLocation.CLLocationAccuracy
+  public var stopAltitude: CoreLocation.CLLocationDistance
+  public var activityType: Swift.Int
+  public var confidence: Swift.Int
+  public var vehicleType: Swift.Int
+  public var role: Swift.Int
+  public typealias ActivityDataEventHandler = (JedAI.ActivityDataEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.ActivityDataEvent.ActivityDataEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+  public static let Invalid: JedAI.ActivityDataEvent
+}
+public struct VisitDataEvent {
+  public var id: Swift.Int
+  public var enterTimestamp: Swift.Int
+  public var exitTimestamp: Swift.Int
+  public var enterTimestampLocal: Swift.Int
+  public var exitTimestampLocal: Swift.Int
+  public var latitude: CoreLocation.CLLocationDegrees
+  public var longitude: CoreLocation.CLLocationDegrees
+  public var accuracy: CoreLocation.CLLocationAccuracy
+  public var altitude: CoreLocation.CLLocationDistance
+  public typealias VisitDataEventHandler = (JedAI.VisitDataEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.VisitDataEvent.VisitDataEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct LocationDataEvent {
+  public var locationTime: Swift.Int
+  public var locationTimeLocal: Swift.Int
+  public var latitude: CoreLocation.CLLocationDegrees
+  public var longitude: CoreLocation.CLLocationDegrees
+  public var accuracy: CoreLocation.CLLocationAccuracy
+  public var altitude: CoreLocation.CLLocationDistance
+  public var speed: CoreLocation.CLLocationSpeed
+  public var bearing: CoreLocation.CLLocationDirection
+  public var provider: Swift.String
+  public var floor: Swift.Int
+  public var verticalAccuracy: CoreLocation.CLLocationAccuracy
+  public var barometer: Swift.Double
+  public var deltaStepsCounted: Swift.Int
+  public typealias LocationDataEventHandler = (JedAI.LocationDataEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.LocationDataEvent.LocationDataEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct PublicApi {
+  public func findHomePlace() -> JedAI.JedAIModel.HomePlace?
+  public func findAllOfficesPlaces() -> [JedAI.JedAIModel.OfficePlace]
+  public func findPrimaryOfficePlace() -> JedAI.JedAIModel.OfficePlace?
+  public func isNearHome(distance: Swift.Int, fromLocation location: JedAI.JedAIModel.Location) -> Swift.Bool
+  public func isNearAnyOffice(distance: Swift.Int, fromLocation location: JedAI.JedAIModel.Location) -> Swift.Bool
+  public func lastKnownLocationIf(younger: Foundation.TimeInterval) -> JedAI.JedAIModel.Location?
+  public func findMostRecentLocation(before: Foundation.Date) throws -> JedAI.JedAIModel.Location?
+  public func findMostRecentLocation(after: Foundation.Date) throws -> JedAI.JedAIModel.Location?
+  public func findVisits(from: Foundation.Date = Date.distantPast, to: Foundation.Date = Date.distantFuture) -> [JedAI.JedAIModel.Visit]
+  public func countVisits(from: Foundation.Date = Date.distantPast, to: Foundation.Date = Date.distantFuture) -> Swift.Int
+  public func findActivities(from: Foundation.Date = Date.distantPast, to: Foundation.Date = Date.distantFuture, activityTypes: [JedAI.JedAIModel.ActivityType] = JedAIModel.ActivityType.allCases, vehicleTypes: [JedAI.JedAIModel.VehicleType] = JedAIModel.VehicleType.allCases) -> [JedAI.JedAIModel.Activity]
+  public func countActivities(from: Foundation.Date = Date.distantPast, to: Foundation.Date = Date.distantFuture) -> Swift.Int
+  public func findLocations(from: Foundation.Date = Date.distantPast, to: Foundation.Date = Date.distantFuture) throws -> [JedAI.JedAIModel.Location]
+  public var firstWorkingDay: Swift.Int {
+    get
+  }
+  public var lastWorkingDay: Swift.Int {
+    get
+  }
+  public var firstWeekendDay: Swift.Int {
+    get
+  }
+  public var lastWeekendDay: Swift.Int {
+    get
+  }
+  public var weekDays: [Swift.Bool] {
+    get
+    set
+  }
+  public var version: Swift.String {
+    get
+  }
+  public var simCountry: Swift.String {
+    get
+  }
+  public var netCountry: Swift.String {
+    get
+  }
+  public var currentNetwork: JedAI.JedAIModel.Network? {
+    get
+  }
+  public func getDatabaseConnection() -> JedAI.DatabaseConnection
+  public func closeDatabaseConnection()
+  public var connectedToWiFi: Swift.Bool {
+    get
+  }
+  public func getDatabaseConnectionWritable() -> JedAI.DatabaseConnection
+  public func updateVisit(_ visit: JedAI.JedAIModel.Visit, withPoiId poiId: Swift.Int, updateOriginPoiIdIfNeed: Swift.Bool = false, db: JedAI.DatabaseConnection) throws
+  public func update(activity: JedAI.JedAIModel.Activity, byActivityType activityType: JedAI.JedAIModel.ActivityType, byVehicleType vehicleType: JedAI.JedAIModel.VehicleType = .undefined)
+}
+public struct UserApi {
+  public var userUUID: Swift.String {
+    get
+  }
+  public var externalUserID: Swift.String? {
+    get
+    set
+  }
+  public func reportUserID(suffix: Swift.String) -> Swift.String
+}
+extension Date {
+  public func timeIntervalSince1970Local(tz: Foundation.TimeZone = TimeZone.current) -> Foundation.TimeInterval
+  public func addDay() -> Foundation.Date
+  public static var now: Foundation.Date {
+    get
+  }
+  public static func - (left: Foundation.Date, right: Foundation.Date) -> Foundation.TimeInterval
+  public func sensorFormated(timeZone: Foundation.TimeZone = TimeZone.current) -> Swift.String
+  public var startOfDay: Foundation.Date {
+    get
+  }
+  public var endOfDay: Foundation.Date {
+    get
+  }
+  public var isDistantFuture: Swift.Bool {
+    get
+  }
+  public var isDistantPast: Swift.Bool {
+    get
+  }
+  public var isDistant: Swift.Bool {
+    get
+  }
+}
+extension CLLocationCoordinate2D {
+  public var coreLocation: CoreLocation.CLLocation {
+    get
+  }
+  public func distance(from: CoreLocation.CLLocationCoordinate2D) -> CoreLocation.CLLocationDistance
+}
+extension CLLocation {
+  public var location: JedAI.JedAIModel.Location {
+    get
+  }
+}
+extension CLLocation {
+  public func geohash(_ precision: Swift.Int) -> Swift.String
+}
+extension CLLocationCoordinate2D {
+  public func geohash(_ precision: Swift.Int) -> Swift.String
+}
+public protocol Service {
+  func start()
+  func stop()
+  func refresh()
+  var name: Swift.String { get }
+}
+@objc open class AbstractService : ObjectiveC.NSObject, JedAI.Service {
+  public func start()
+  public func stop()
+  public func restart()
+  open func onStart() throws
+  open func onStop() throws
+  public func refresh()
+  public var name: Swift.String {
+    get
+  }
+  public var started: Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+public class DatabaseConnection {
+  public var lastRowId: Swift.Int {
+    get
+  }
+  public var changedRowsCount: Swift.Int {
+    get
+  }
+  public func close()
+  @objc deinit
+}
+public class DatabaseService {
+  public enum ConnectionMode {
+    case readOnly
+    case readWrite
+    case readWriteCreate
+    public static func == (a: JedAI.DatabaseService.ConnectionMode, b: JedAI.DatabaseService.ConnectionMode) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public func getConnectionReadonly() -> JedAI.DatabaseConnection
+  public func getConnection(_ connectionMode: JedAI.DatabaseService.ConnectionMode = .readOnly) -> JedAI.DatabaseConnection
+  public func getConnection(_ connectionMode: JedAI.DatabaseService.ConnectionMode = .readOnly, databaseUrl: Foundation.URL, shared: Swift.Bool) -> JedAI.DatabaseConnection
+  public func resetDatabaseUrl()
+  public var externalDatabaseUrl: Foundation.URL? {
+    get
+    set
+  }
+  public init()
+  public var defaultDatabaseUrl: Foundation.URL
+  public var alternativeDatabaseUrl: Foundation.URL?
+  public var preferedDatabaseLocation: Foundation.URL?
+  public static let shared: JedAI.DatabaseService
+  @objc deinit
+}
+public struct oslog {
+  public static let location: os.OSLog
+  public static let visit: os.OSLog
+  public static let activity: os.OSLog
+  public static let integration: os.OSLog
+}
+public func os_log_file(_ message: Swift.StaticString, log: os.OSLog = .default, type: os.OSLogType = .default, _ args: Swift.CVarArg...)
+extension Float {
+  public func percent(of value: Swift.Float) -> Swift.Float
+  public func rounded(toPlaces places: Swift.Int) -> Swift.Float
+}
+extension Double {
+  public func percent(of value: Swift.Double) -> Swift.Double
+  public func rounded(toPlaces places: Swift.Int) -> Swift.Double
+}
+public struct ShareApi {
+  public func share(to url: Foundation.URL, options: JedAI.ShareOptions, customSources: [Swift.String : Foundation.URL]? = nil, password: Swift.String? = nil) throws
+}
+public struct ConfigEvent {
+  public typealias ConfigEventHandler = (JedAI.ConfigEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.ConfigEvent.ConfigEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+  }
+}
+public struct RemoteConfigEvent {
+  public typealias RemoteConfigEventHandler = (JedAI.RemoteConfigEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.RemoteConfigEvent.RemoteConfigEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+  public var payload: Foundation.Data
+}
+public class BackgroundTask {
+  public func run(_ block: @escaping () -> Swift.Void)
+  public func runT<T>(_ block: @escaping () throws -> T) throws -> T
+  public static let shared: JedAI.BackgroundTask
+  @objc deinit
+}
+public struct RecordApi {
+  public var recordsList: [Swift.String] {
+    get
+  }
+  public var recording: Swift.Bool {
+    get
+  }
+  public func start(_ options: JedAI.RecordingOptions = [])
+  public func stop()
+  public func cleanAll()
+  public func getFullRecord() throws -> JedAI.Model.Record.Info
+  public func getRecordBy(key: Swift.String?) throws -> JedAI.Model.Record.Info
+  public func dropRecordBy(key: Swift.String)
+  public func reindex(key: Swift.String? = nil) throws
+}
+extension Array {
+  public func dictionary<K, V>(_ transform: (Swift.Array<Element>.Iterator.Element) -> [K : V]?) -> [K : V] where K : Swift.Hashable
+  public func dictionaryA<K, V>(_ transform: (Swift.Array<Element>.Iterator.Element) -> [K : [V]]?) -> [K : [V]] where K : Swift.Hashable
+}
+extension Set {
+  public func dictionary<K, V>(_ transform: (Swift.Set<Element>.Iterator.Element) -> [K : V]?) -> [K : V] where K : Swift.Hashable
+}
+extension Array where Element == Swift.Double {
+  public func median() -> Swift.Double
+}
+public struct ConfigurationApi {
+  public func updateRemoteConfiguration(payload: Foundation.Data)
+  public var hasRemoteConfiguration: Swift.Bool {
+    get
+  }
+  public func readRemoteConfiguration() throws -> Foundation.Data
+  public func dropRemoteConfiguration() throws
+  public func writeRemoteConfiguration(payload: Foundation.Data) throws
+  public func get<T>(type: T.Type, moduleName: Swift.String, defaultData: Foundation.Data) -> T? where T : Swift.Decodable
+  public func set<T>(config: T, moduleName: Swift.String) where T : Swift.Encodable
+}
+extension Task {
+  final public class func withDelay(_ delay: Foundation.TimeInterval) -> JedAI.Task<Swift.Void>
+}
+extension DateFormatter {
+  public static func sensorsDataFormatter(timeZone: Foundation.TimeZone = TimeZone.current) -> Foundation.DateFormatter
+  public static func sensorsDataFormatterNoTZ() -> Foundation.DateFormatter
+}
+extension Error {
+  public var fullLocalizedDescription: Swift.String {
+    get
+  }
+}
+public struct Model {
+}
+public struct ShareOptions : Swift.OptionSet {
+  public var rawValue: Swift.Int
+  public init(rawValue: Swift.Int)
+  public static let logs: JedAI.ShareOptions
+  public static let db: JedAI.ShareOptions
+  public static let sensors: JedAI.ShareOptions
+  public typealias Element = JedAI.ShareOptions
+  public typealias ArrayLiteralElement = JedAI.ShareOptions
+  public typealias RawValue = Swift.Int
+}
+extension CLAuthorizationStatus {
+  public var debugDescription: Swift.String {
+    get
+  }
+}
+public struct JedAIModel {
+  public struct Activity : Swift.Codable {
+    public var id: Swift.Int
+    public var startDate: Foundation.Date
+    public var endDate: Foundation.Date
+    public var startLocation: JedAI.JedAIModel.Location
+    public var endLocation: JedAI.JedAIModel.Location
+    public var type: JedAI.JedAIModel.ActivityType
+    public var vehicleType: JedAI.JedAIModel.VehicleType
+    public var startTimeZone: Foundation.TimeZone
+    public var endTimeZone: Foundation.TimeZone
+    public init(id: Swift.Int, startDate: Foundation.Date, endDate: Foundation.Date, startLocation: JedAI.JedAIModel.Location, endLocation: JedAI.JedAIModel.Location, type: JedAI.JedAIModel.ActivityType, vehicleType: JedAI.JedAIModel.VehicleType, startTimeZone: Foundation.TimeZone, endTimeZone: Foundation.TimeZone)
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+  public enum ActivityType : Swift.String, Swift.Codable, Swift.CaseIterable {
+    case undefined
+    case stationary
+    case inVehicle
+    case cycling
+    case walking
+    case running
+    case sleeping
+    public static func typeBy(dbType: Swift.Int) -> JedAI.JedAIModel.ActivityType
+    public var title: Swift.String {
+      get
+    }
+    public func currentVisitWeight(visitState: JedAI.JedAIModel.ExtendedVisitState) -> Swift.Double?
+    public typealias RawValue = Swift.String
+    public init?(rawValue: Swift.String)
+    public var rawValue: Swift.String {
+      get
+    }
+    public typealias AllCases = [JedAI.JedAIModel.ActivityType]
+    public static var allCases: [JedAI.JedAIModel.ActivityType] {
+      get
+    }
+  }
+  public enum VehicleType : Swift.String, Swift.Codable, Swift.CaseIterable {
+    case undefined
+    case car
+    case bus
+    case train
+    case boat
+    case airplain
+    public static func typeBy(dbType: Swift.Int) -> JedAI.JedAIModel.VehicleType
+    public var dbType: Swift.Int {
+      get
+    }
+    public var title: Swift.String {
+      get
+    }
+    public typealias AllCases = [JedAI.JedAIModel.VehicleType]
+    public static var allCases: [JedAI.JedAIModel.VehicleType] {
+      get
+    }
+    public typealias RawValue = Swift.String
+    public init?(rawValue: Swift.String)
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public struct Location : Swift.Codable, Swift.CustomStringConvertible {
+    public var timestamp: Foundation.Date
+    public var latitude: CoreLocation.CLLocationDegrees
+    public var longitude: CoreLocation.CLLocationDegrees
+    public var speed: CoreLocation.CLLocationSpeed
+    public var bearing: CoreLocation.CLLocationDirection
+    public var altitude: CoreLocation.CLLocationDistance
+    public var timeZone: Foundation.TimeZone
+    public var country: Swift.String
+    public var coreLocation: CoreLocation.CLLocation {
+      get
+    }
+    public var coordinate2D: CoreLocation.CLLocationCoordinate2D {
+      get
+    }
+    public func distance(from otherLocation: JedAI.JedAIModel.Location) -> CoreLocation.CLLocationDistance
+    public func distance(from otherLocation: JedAI.Model.Sensors.Location) -> CoreLocation.CLLocationDistance
+    public func geohash(_ precision: Swift.Int) -> Swift.String
+    public init(timestamp: Foundation.Date = Date.distantPast, latitude: CoreLocation.CLLocationDegrees, longitude: CoreLocation.CLLocationDegrees, speed: CoreLocation.CLLocationSpeed = -1, bearing: CoreLocation.CLLocationDirection = -1, altitude: CoreLocation.CLLocationDistance = -1, timezone: Foundation.TimeZone = TimeZone.current, country: Swift.String = "")
+    public init(timestamp: Foundation.Date = Date.distantPast, coordinate: CoreLocation.CLLocationCoordinate2D, speed: CoreLocation.CLLocationSpeed = -1, bearing: CoreLocation.CLLocationDirection = -1, altitude: CoreLocation.CLLocationDistance = -1, timezone: Foundation.TimeZone = TimeZone.current, country: Swift.String = "")
+    public var description: Swift.String {
+      get
+    }
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+  public static let InvalidLocation: JedAI.JedAIModel.Location
+  public struct Visit : Swift.Codable {
+    public var id: Swift.Int
+    public var enterDate: Foundation.Date
+    public var exitDate: Foundation.Date
+    public var center: JedAI.JedAIModel.Location
+    public var timeZone: Foundation.TimeZone
+    public init(id: Swift.Int, enterDate: Foundation.Date, exitDate: Foundation.Date, center: JedAI.JedAIModel.Location, timeZone: Foundation.TimeZone = TimeZone.current)
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+  public struct Network : Swift.Codable {
+    public var timestamp: Foundation.Date
+    public var wifiSSID: Swift.String
+    public var wifiBSSID: Swift.String
+    public var wifiNetAddress: Swift.String
+    public var cellularNetAddress: Swift.String
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+  public struct HomePlace {
+    public var id: Swift.Int
+    public var location: JedAI.JedAIModel.Location
+    public var country: Swift.String
+  }
+  public struct OfficePlace {
+    public var id: Swift.Int
+    public var location: JedAI.JedAIModel.Location
+    public var country: Swift.String
+  }
+  public struct Config : Swift.Codable {
+    public enum GeofenceStrategy : Swift.String, Swift.Codable {
+      case basic
+      case adaptive
+      public typealias RawValue = Swift.String
+      public init?(rawValue: Swift.String)
+      public var rawValue: Swift.String {
+        get
+      }
+    }
+    public enum VisitsDetectionStrategy : Swift.String, Swift.Codable {
+      case byVisits
+      case byLocations
+      case byVisitsAndLocations
+      public typealias RawValue = Swift.String
+      public init?(rawValue: Swift.String)
+      public var rawValue: Swift.String {
+        get
+      }
+    }
+    public var silent: Swift.Bool
+    public var recorderRecordAlways: Swift.Bool
+    public var geofenceStrategy: JedAI.JedAIModel.Config.GeofenceStrategy
+    public var visitsDetectionStrategy: JedAI.JedAIModel.Config.VisitsDetectionStrategy
+    public init()
+    public init(from decoder: Swift.Decoder) throws
+    public static func get() -> JedAI.JedAIModel.Config
+    public func update()
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+}
+extension Array where Element == JedAI.JedAIModel.Location {
+  public var midPoint: JedAI.JedAIModel.Location {
+    get
+  }
+}
+extension JedAIModel {
+  public struct ExtendedVisitState : Swift.Codable {
+    public func networkBelongsToVisit(network: JedAI.Model.Sensors.Network?, before: Foundation.Date = Date.distantFuture) -> Swift.Bool
+    public func motionStatistics(referenceNowDate: Foundation.Date = Date.now) -> (inVehicle: Swift.Double, walking: Swift.Double, running: Swift.Double, cycling: Swift.Double, stationary: Swift.Double)
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+}
+public class TaskCompletionSource<TResult> {
+  final public let task: JedAI.Task<TResult>
+  public init()
+  public func set(result: TResult)
+  public func set(error: Swift.Error)
+  public func cancel()
+  @discardableResult
+  public func trySet(result: TResult) -> Swift.Bool
+  @discardableResult
+  public func trySet(error: Swift.Error) -> Swift.Bool
+  @discardableResult
+  public func tryCancel() -> Swift.Bool
+  @objc deinit
+}
+extension JedAI {
+  public func registerForRefresh()
+}
+public typealias JedAIRecordModel = JedAI.Model.Record
+public typealias JedAIPlaybackModel = JedAI.Model.Playback
+extension Model {
+  public struct Record {
+    public struct IndexMetadata : Swift.Codable {
+      public var startDate: Foundation.Date
+      public var endDate: Foundation.Date
+      public init(from decoder: Swift.Decoder) throws
+      public func encode(to encoder: Swift.Encoder) throws
+    }
+    public struct Info {
+      public var startDate: Foundation.Date
+      public var endDate: Foundation.Date
+      public var indexUrl: Foundation.URL!
+      public var indexMetadataUrl: Foundation.URL!
+      public var databaseUrl: Foundation.URL!
+      public var homeUrl: Foundation.URL?
+      public var playInSandbox: Swift.Bool
+      public init()
+    }
+  }
+  public struct Playback {
+    public struct Sensors {
+      public var locations: [JedAI.Model.Sensors.Location]
+      public var regions: [JedAI.Model.Sensors.Region]
+      public var visits: [JedAI.Model.Sensors.Visit]
+      public var activities: [JedAI.Model.Sensors.Activity]
+      public var steps: [JedAI.Model.Sensors.Pedometer]
+      public var carAudio: [JedAI.Model.Sensors.CarAudio]
+      public var network: [JedAI.Model.Sensors.Network]
+      public var appState: [JedAI.Model.Sensors.AppState]
+      public var battery: [JedAI.Model.Sensors.Battery]
+      public init()
+    }
+  }
+}
+public struct PlaybackEvent {
+  public var first: Swift.Bool {
+    get
+  }
+  public var timestamp: Foundation.Date
+  public var location: JedAI.Model.Sensors.Location?
+  public var region: JedAI.Model.Sensors.Region?
+  public var visit: JedAI.Model.Sensors.Visit?
+  public var activity: JedAI.Model.Sensors.Activity?
+  public var pedometer: JedAI.Model.Sensors.Pedometer?
+  public var carAudio: JedAI.Model.Sensors.CarAudio?
+  public var network: JedAI.Model.Sensors.Network?
+  public var appState: JedAI.Model.Sensors.AppState?
+  public var index: Swift.Int
+  public var count: Swift.Int
+  public var last: Swift.Bool
+  public typealias PlaybackEventHandler = (JedAI.PlaybackEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.PlaybackEvent.PlaybackEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct RecorderEvent {
+  public var timestamp: Foundation.Date
+  public var location: JedAI.Model.Sensors.Location?
+  public var region: JedAI.Model.Sensors.Region?
+  public var visit: JedAI.Model.Sensors.Visit?
+  public var activity: JedAI.Model.Sensors.Activity?
+  public var pedometer: JedAI.Model.Sensors.Pedometer?
+  public var carAudio: JedAI.Model.Sensors.CarAudio?
+  public var network: JedAI.Model.Sensors.Network?
+  public var appState: JedAI.Model.Sensors.AppState?
+  public var battery: JedAI.Model.Sensors.Battery?
+  public typealias RecorderEventHandler = (JedAI.RecorderEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.RecorderEvent.RecorderEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct ActivityEvent {
+  public enum State : Swift.String {
+    case start
+    case end
+    public typealias RawValue = Swift.String
+    public init?(rawValue: Swift.String)
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public init(date: Foundation.Date, activity: JedAI.JedAIModel.Activity, state: JedAI.ActivityEvent.State)
+  public var date: Foundation.Date
+  public var activity: JedAI.JedAIModel.Activity
+  public var state: JedAI.ActivityEvent.State
+  public typealias ActivityEventHandler = (JedAI.ActivityEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.ActivityEvent.ActivityEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct VisitEvent {
+  public enum State : Swift.String {
+    case enter
+    case update
+    case exit
+    public typealias RawValue = Swift.String
+    public init?(rawValue: Swift.String)
+    public var rawValue: Swift.String {
+      get
+    }
+  }
+  public enum Reason {
+    case enter
+    case exit
+    case updateLocation
+    case updatePOI
+    public static func == (a: JedAI.VisitEvent.Reason, b: JedAI.VisitEvent.Reason) -> Swift.Bool
+    public var hashValue: Swift.Int {
+      get
+    }
+    public func hash(into hasher: inout Swift.Hasher)
+  }
+  public init(date: Foundation.Date, visit: JedAI.JedAIModel.Visit, state: JedAI.VisitEvent.State, reason: JedAI.VisitEvent.Reason? = nil, extendedState: JedAI.JedAIModel.ExtendedVisitState? = nil)
+  public var date: Foundation.Date
+  public var visit: JedAI.JedAIModel.Visit
+  public var state: JedAI.VisitEvent.State
+  public var extendedState: JedAI.JedAIModel.ExtendedVisitState?
+  public var reason: JedAI.VisitEvent.Reason
+  public typealias VisitEventHandler = (JedAI.VisitEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.VisitEvent.VisitEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct LocationEvent {
+  public var date: Foundation.Date
+  public var location: JedAI.JedAIModel.Location
+  public typealias LocationEventHandler = (JedAI.LocationEvent) -> (Swift.Void)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.LocationEvent.LocationEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct HeartbeatEvent {
+  public typealias HeartbeatEventHandler = (JedAI.HeartbeatEvent) -> (Swift.Void)
+  public init()
+  public func every(_ every: Swift.Int, offset: Swift.Int = 0) -> Swift.Bool
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.HeartbeatEvent.HeartbeatEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct ReportRequestEvent {
+  public var reportIdentifier: Swift.String
+  public typealias ReportRequestEventHandler = (JedAI.ReportRequestEvent) -> (Swift.Void)
+  public func post()
+  public init(reportIdentifier: Swift.String)
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.ReportRequestEvent.ReportRequestEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct ReportResponseEvent {
+  public var reportIdentifier: Swift.String
+  public var reportPayload: Any
+  public typealias ReportResponseEventHandler = (JedAI.ReportResponseEvent) -> (Swift.Void)
+  public init(reportIdentifier: Swift.String, reportPayload: Any)
+  public func post()
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.ReportResponseEvent.ReportResponseEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct JedAIStateEvent {
+  public var state: JedAI.JedAIState
+  public typealias JedAIStateEventHandler = (JedAI.JedAIStateEvent) -> (Swift.Void)
+  public init(state: JedAI.JedAIState)
+  public func post()
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.JedAIStateEvent.JedAIStateEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public struct JedAIWarningEvent {
+  public var wifiAvailable: Swift.Bool
+  public var locationServicesAvailable: Swift.Bool
+  public var motionServicesAvailable: Swift.Bool
+  public typealias JedAIWarningEventHandler = (JedAI.JedAIWarningEvent) -> (Swift.Void)
+  public init(wifiAvailable: Swift.Bool, locationServicesAvailable: Swift.Bool, motionServicesAvailable: Swift.Bool)
+  public func post()
+  public struct Listener {
+    mutating public func listen(_ handler: @escaping JedAI.JedAIWarningEvent.JedAIWarningEventHandler, queue: Foundation.OperationQueue? = nil)
+    mutating public func forget()
+    public init()
+  }
+}
+public class StreamReader : Swift.Hashable {
+  public static func == (lhs: JedAI.StreamReader, rhs: JedAI.StreamReader) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public init?(path: Swift.String, delimiter: Swift.String = "\n", encoding: Swift.String.Encoding = .utf8, chunkSize: Swift.Int = 4096)
+  @objc deinit
+  public func nextLine() -> Swift.String?
+  public func rewind()
+  public func close()
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+extension StreamReader : Swift.Sequence {
+  public func makeIterator() -> Swift.AnyIterator<Swift.String>
+  public typealias Element = Swift.String
+  public typealias Iterator = Swift.AnyIterator<Swift.String>
+}
+public struct AggregateError : Swift.Error {
+  public let errors: [Swift.Error]
+}
+public struct CancelledError : Swift.Error {
+  public init()
+}
+public struct Geohash {
+  public static func encode(latitude: Swift.Double, longitude: Swift.Double, precision: Swift.Int) -> Swift.String
+  public static func decode(_ hash: Swift.String) -> (latitude: Swift.Double, longitude: Swift.Double)?
+  public static func neighbors(_ centerHash: Swift.String) -> [Swift.String]?
+}
+extension JedAIModel {
+  public struct Polygon : Swift.Codable {
+    public func distance(from location: JedAI.JedAIModel.Location) -> CoreLocation.CLLocationDistance
+    public func inside(location: JedAI.JedAIModel.Location) -> Swift.Bool
+    public init(points: [JedAI.JedAIModel.Location])
+    public var points: [JedAI.JedAIModel.Location]
+    public var boundingBox: JedAI.JedAIModel.BoundingBox
+    public var boundingCircle: JedAI.JedAIModel.BoundingCircle
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+  public struct BoundingBox : Swift.Codable {
+    public var nw: JedAI.JedAIModel.Location
+    public var ne: JedAI.JedAIModel.Location
+    public var se: JedAI.JedAIModel.Location
+    public var sw: JedAI.JedAIModel.Location
+    public var longitudeDelta: CoreLocation.CLLocationDistance
+    public var latitudeDelta: CoreLocation.CLLocationDistance
+    public var areaInDegrees: Swift.Double {
+      get
+    }
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+  public struct BoundingCircle : Swift.Codable {
+    public var center: JedAI.JedAIModel.Location
+    public var radius: CoreLocation.CLLocationDistance
+    public init(from decoder: Swift.Decoder) throws
+    public func encode(to encoder: Swift.Encoder) throws
+  }
+}
+public struct RecordingOptions : Swift.OptionSet {
+  public var rawValue: Swift.Int
+  public init(rawValue: Swift.Int)
+  public static let clean: JedAI.RecordingOptions
+  public typealias Element = JedAI.RecordingOptions
+  public typealias ArrayLiteralElement = JedAI.RecordingOptions
+  public typealias RawValue = Swift.Int
+}
+extension JedAI.JedAIState : Swift.Equatable {}
+extension JedAI.JedAIState : Swift.Hashable {}
+extension JedAI.Model.Sensors.Status : Swift.Equatable {}
+extension JedAI.Model.Sensors.Status : Swift.Hashable {}
+extension JedAI.Model.Sensors.Status : Swift.RawRepresentable {}
+extension JedAI.Model.Sensors.Region.State : Swift.Equatable {}
+extension JedAI.Model.Sensors.Region.State : Swift.Hashable {}
+extension JedAI.Model.Sensors.Region.State : Swift.RawRepresentable {}
+extension JedAI.Model.Sensors.Battery.State : Swift.Equatable {}
+extension JedAI.Model.Sensors.Battery.State : Swift.Hashable {}
+extension JedAI.Model.Sensors.Battery.State : Swift.RawRepresentable {}
+extension JedAI.DatabaseService.ConnectionMode : Swift.Equatable {}
+extension JedAI.DatabaseService.ConnectionMode : Swift.Hashable {}
+extension JedAI.JedAIModel.Config.GeofenceStrategy : Swift.Equatable {}
+extension JedAI.JedAIModel.Config.GeofenceStrategy : Swift.Hashable {}
+extension JedAI.JedAIModel.Config.GeofenceStrategy : Swift.RawRepresentable {}
+extension JedAI.JedAIModel.ActivityType : Swift.Hashable {}
+extension JedAI.JedAIModel.ActivityType : Swift.RawRepresentable {}
+extension JedAI.JedAIModel.VehicleType : Swift.Hashable {}
+extension JedAI.JedAIModel.VehicleType : Swift.RawRepresentable {}
+extension JedAI.JedAIModel.Config.VisitsDetectionStrategy : Swift.Hashable {}
+extension JedAI.JedAIModel.Config.VisitsDetectionStrategy : Swift.RawRepresentable {}
+extension JedAI.ActivityEvent.State : Swift.Equatable {}
+extension JedAI.ActivityEvent.State : Swift.Hashable {}
+extension JedAI.ActivityEvent.State : Swift.RawRepresentable {}
+extension JedAI.VisitEvent.State : Swift.Equatable {}
+extension JedAI.VisitEvent.State : Swift.Hashable {}
+extension JedAI.VisitEvent.State : Swift.RawRepresentable {}
+extension JedAI.VisitEvent.Reason : Swift.Equatable {}
+extension JedAI.VisitEvent.Reason : Swift.Hashable {}
